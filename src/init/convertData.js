@@ -1,4 +1,6 @@
 import fs from "fs";
+import readline from "readline";
+import stream from "stream";
 
 const { DATA_DIR } = process.env;
 
@@ -26,13 +28,20 @@ async function writeToJSONFile(data, filename) {
 
 async function readFile(filename) {
   return new Promise((resolve, reject) => {
-    fs.readFile(filename, "utf8", (err, data) => {
-      if (err) {
-        console.error(`Can not read ${filename}`);
-        reject(err);
-      } else {
-        resolve(data);
+    let data = [];
+    const instream = fs.createReadStream(filename);
+    const rl = readline.createInterface({
+      input: instream,
+    });
+    rl.on("line", function(line) {
+      if (line.length) {
+        data.push(line);
       }
+    });
+
+    rl.on("close", function() {
+      console.log("Finish", data.length);
+      resolve(data);
     });
   });
 }
@@ -44,8 +53,7 @@ async function readFile(filename) {
 // Note that this method does not write to file
 async function convertOrderLines() {
   try {
-    const data = await readFile(`${DATA_DIR}/tmp-order-line.csv`);
-    const rows = data.split("\n");
+    const rows = await readFile(`${DATA_DIR}/tmp-order-line.csv`);
     const orderLines = rows
       .map(row => {
         const values = row.split(",");
@@ -102,8 +110,7 @@ async function fixOrders(orders) {
 
 async function convertOrders() {
   try {
-    const data = await readFile(`${DATA_DIR}/order.csv`);
-    const rows = data.split("\n");
+    const rows = await readFile(`${DATA_DIR}/order.csv`);
     const orders = rows
       .map(row => {
         const values = row.split(",");
@@ -154,8 +161,7 @@ async function fixDistricts(districts) {
 
 async function convertWarehouses() {
   try {
-    const data = await readFile(`${DATA_DIR}/warehouse.csv`);
-    const rows = data.split("\n");
+    const rows = await readFile(`${DATA_DIR}/warehouse.csv`);
     const warehouses = rows
       .map(row => {
         const values = row.split(",");
@@ -185,8 +191,7 @@ async function convertWarehouses() {
 
 async function convertDistricts() {
   try {
-    const data = await readFile(`${DATA_DIR}/district.csv`);
-    const rows = data.split("\n");
+    const rows = await readFile(`${DATA_DIR}/district.csv`);
     const districts = rows
       .map(row => {
         const values = row.split(",");
@@ -222,8 +227,7 @@ async function convertDistricts() {
 
 async function convertCustomers() {
   try {
-    const data = await readFile(`${DATA_DIR}/customer.csv`);
-    const rows = data.split("\n");
+    const rows = await readFile(`${DATA_DIR}/customer.csv`);
     const customers = rows
       .map(row => {
         const values = row.split(",");
@@ -265,8 +269,7 @@ async function convertCustomers() {
 
 async function convertItems() {
   try {
-    const data = await readFile(`${DATA_DIR}/item.csv`);
-    const rows = data.split("\n");
+    const rows = await readFile(`${DATA_DIR}/item.csv`);
     const items = rows
       .map(row => {
         const values = row.split(",");
@@ -293,8 +296,7 @@ async function convertItems() {
 // Note that this method read from tmp_stock.csv where the item name and item price are added
 async function convertStocks() {
   try {
-    const data = await readFile(`${DATA_DIR}/tmp-stock.csv`);
-    const rows = data.split("\n");
+    const rows = await readFile(`${DATA_DIR}/tmp-stock.csv`);
     const stocks = rows
       .map(row => {
         const values = row.split(",");
