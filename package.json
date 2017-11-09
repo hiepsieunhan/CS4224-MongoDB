@@ -1,0 +1,26 @@
+{
+  "name": "cs42234-mongodb",
+  "version": "1.0.0",
+  "description": "Mongo DB assignment for CS4224 - NUS",
+  "main": "index.js",
+  "dependencies": {
+    "mongoose": "^4.13.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hiepsieunhan/CS4224-MongoDB.git"
+  },
+  "keywords": [
+    "MongoDB"
+  ],
+  "author": "Bui Do Hiep",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hiepsieunhan/CS4224-MongoDB/issues"
+  },
+  "homepage": "https://github.com/hiepsieunhan/CS4224-MongoDB#readme"
+}
