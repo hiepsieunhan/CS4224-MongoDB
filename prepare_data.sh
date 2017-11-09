@@ -2,7 +2,7 @@
 
 # Pass the csv files folder as the first args. Note that the data path must be absolute path, which can easily archive by using `pwd`
 
-echo "----------Start loading----------"
+echo "----------Start----------"
 
 echo "----------Adding ol-i-name into order-line----------"
 
@@ -27,7 +27,5 @@ done
 echo "----------Convert csv file into json file----------"
 
 DATA_DIR=$1 npm run convert-data 
-
-echo "----------Import json file into MongoDB----------"
 
 echo "----------Done----------"
