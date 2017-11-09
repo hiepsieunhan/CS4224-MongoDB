@@ -25,7 +25,11 @@ const orderSchema = new Schema({
   ],
 });
 
+// unique index
 orderSchema.index({ o_w_id: 1, o_d_id: 1, o_id: 1 }, { unique: true });
+
+// order by customer index
+orderSchema.index({ o_w_id: 1, o_d_id: 1, o_c_id: 1, o_id: -1 });
 
 const Order = mongoose.model("Order", orderSchema);
 

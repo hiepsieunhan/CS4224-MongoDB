@@ -26,7 +26,11 @@ const customerSchema = new Schema({
   c_data: String,
 });
 
+// unique index
 customerSchema.index({ c_w_id: 1, c_d_id: 1, c_id: 1 }, { unique: true });
+
+// top balance index descending
+customerSchema.index({ c_balance: -1 });
 
 const Customer = mongoose.model("Customer", customerSchema);
 
