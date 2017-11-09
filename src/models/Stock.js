@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const stockSchema = new Schema({
@@ -27,4 +27,4 @@ stockSchema.index({ s_w_id: 1, s_i_id: 1 }, { unique: true });
 
 const Stock = mongoose.model("Stock", stockSchema);
 
-module.exports = Stock;
+export default Stock;

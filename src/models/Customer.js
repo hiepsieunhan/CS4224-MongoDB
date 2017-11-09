@@ -1,11 +1,11 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const customerSchema = new Schema({
   c_w_id: Number,
   c_d_id: Number,
   c_id: Number,
-  c_first:: String,
+  c_first: String,
   c_middle: String,
   c_last: String,
   c_street_1: String,
@@ -34,4 +34,4 @@ customerSchema.index({ c_balance: -1 });
 
 const Customer = mongoose.model("Customer", customerSchema);
 
-module.exports = Customer;
+export default Customer;

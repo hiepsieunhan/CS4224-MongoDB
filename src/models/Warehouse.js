@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const warehouseSchema = new Schema({
@@ -6,7 +6,7 @@ const warehouseSchema = new Schema({
     type: Number,
     unique: true,
   },
-  w_name: Number,
+  w_name: String,
   w_street_1: String,
   w_street_2: String,
   w_city: String,
@@ -18,4 +18,4 @@ const warehouseSchema = new Schema({
 
 const Warehouse = mongoose.model("Warehouse", warehouseSchema);
 
-module.exports = Warehouse;
+export default Warehouse;

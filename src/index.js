@@ -9,11 +9,11 @@
 //   console.log(data.split("\n"));
 // });
 
-const Warehouse = require("./models/Warehouse");
-const District = require("./models/District");
-const Item = require("./models/Item");
+import Warehouse from "./models/Warehouse";
+import District from "./models/District";
+import Item from "./models/Item";
 
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const { PORT = 27017, HOST = "localhost", DB = "supplier" } = process.env;
 

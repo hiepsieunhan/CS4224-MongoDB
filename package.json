@@ -11,7 +11,8 @@
     "babel-preset-env": "^1.6.1"
   },
   "scripts": {
-    "start": "babel-node src/index.js"
+    "start": "babel-node src/index.js",
+    "convert-data": "babel-node src/init/convertData.js"
   },
   "repository": {
     "type": "git",

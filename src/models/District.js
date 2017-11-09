@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const districtSchema = new Schema({
@@ -20,4 +20,4 @@ districtSchema.index({ d_w_id: 1, d_id: 1 }, { unique: true });
 
 const District = mongoose.model("District", districtSchema);
 
-module.exports = District;
+export default District;
