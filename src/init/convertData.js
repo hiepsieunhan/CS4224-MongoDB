@@ -44,7 +44,7 @@ async function readFile(filename) {
 // Note that this method does not write to file
 async function convertOrderLines() {
   try {
-    const data = await readFile(`${DATA_DIR}/tmp_order_line.csv`);
+    const data = await readFile(`${DATA_DIR}/tmp-order-line.csv`);
     const rows = data.split("\n");
     const orderLines = rows
       .map(row => {
@@ -293,7 +293,7 @@ async function convertItems() {
 // Note that this method read from tmp_stock.csv where the item name and item price are added
 async function convertStocks() {
   try {
-    const data = await readFile(`${DATA_DIR}/tmp_stock.csv`);
+    const data = await readFile(`${DATA_DIR}/tmp-stock.csv`);
     const rows = data.split("\n");
     const stocks = rows
       .map(row => {
