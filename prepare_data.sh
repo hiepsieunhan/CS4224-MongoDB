@@ -5,8 +5,8 @@
 echo "----------Start----------"
 
 echo "----------Remove json and tmp csv files---------"
-rm $1/*.json
-rm $1/tmp-*.csv
+find $1 -type f -name '*.json' -delete
+find $1 -type f -name 'tmp-*.csv' -delete
 
 echo "----------Sort order with w_id, d_id, o_id----------"
 sort -t',' -k1 -k2 -k3 $1/order.csv > $1/tmp-order.csv
