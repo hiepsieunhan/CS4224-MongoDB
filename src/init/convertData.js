@@ -395,7 +395,7 @@ async function convertOrders() {
       if (currentOrder) {
         currentOrder.o_order_lines = [];
         currentOrderlineToRead = currentOrder.o_ol_cnt;
-        if ((currentOrderlineToRead = 0)) {
+        if (currentOrderlineToRead == 0) {
           finishConvertCurrentOrder();
         } else {
           orderlineRl.resume();
@@ -413,7 +413,7 @@ async function convertOrders() {
       processOrder(line);
     });
 
-    orderRl.on("close", () => {
+    orderRl.on("end", () => {
       orderlineRl.close();
       outputStream.write("\n]");
       outputStream.end();
