@@ -9,13 +9,13 @@ find $1 -type f -name '*.json' -delete
 find $1 -type f -name 'tmp-*.csv' -delete
 
 echo "----------Sort order with w_id, d_id, o_id----------"
-sort -t',' -k1 -k2 -k3 $1/order.csv > $1/tmp-order.csv
+sort -t',' -k1 -k2 -k3 -g $1/order.csv > $1/tmp-order.csv
 
 echo "----------Adding ol-i-name into order-line----------"
 
 # Create tmp_order_line.csv with new value ol_i_name on the row 11 and then sort
 join -a 1 -j 1 -t ',' -o 1.2 1.3 1.4 1.5 1.6 1.7 1.8 1.9 1.10 1.11 2.2 -e "null" <(paste -d',' <(cut -d',' --output-delimiter=- -f5 $1/order-line.csv) $1/order-line.csv | sort -t',' -k1,1) <(cat $1/item.csv | sort -t',' -k1,1) > $1/tmp-join-order-line.csv
-sort -t',' -k1 -k2 -k3 -k4 $1/tmp-join-order-line.csv > $1/tmp-order-line.csv
+sort -t',' -k1 -k2 -k3 -k4 -g $1/tmp-join-order-line.csv > $1/tmp-order-line.csv
 
 echo "----------Adding s-i-name and s-i-price into stock----------"
 

@@ -347,63 +347,81 @@ async function convertOrders() {
       input: orderStream,
     });
 
-    const getNextOrderlineLine = async () => {
-      return new Promise((resolve, reject) => {
-        orderlineRl.resume();
-        orderlineRl.on("line", line => {
-          orderlineRl.pause();
-          resolve(line);
-        });
-      });
+    let currentOrder = null;
+    let currentOrderlineToRead = 0;
+
+    const finishConvertCurrentOrder = () => {
+      if (!currentOrder || currentOrderlineToRead != 0) {
+        return;
+      }
+
+      let convertedLine = JSON.stringify(currentOrder);
+      if (!isFirstElement) {
+        convertedLine = ",\n" + convertedLine;
+      } else {
+        isFirstElement = false;
+      }
+      outputStream.write(convertedLine);
+
+      orderRl.resume();
     };
 
-    orderRl.on("line", async line => {
-      try {
-        orderRl.pause();
-        const order = orderModelConvert();
-        if (order) {
-          order.o_order_lines = [];
-          for (let i = 0; i < order.o_ol_cnt; i++) {
-            const nextOrderlineLine = await getNextOrderlineLine();
-            const orderline = orderlineModelConvert(nextOrderlineLine);
-            if (orderline) {
-              const {
-                ol_number,
-                ol_i_id,
-                ol_amount,
-                ol_supply_w_id,
-                ol_quantity,
-                ol_dist_info,
-                ol_i_name,
-                ol_delivery_d,
-              } = orderline;
-              // Assign delivery_d into order and remove from all orderlines
-              order.o_delivery_d = ol_delivery_d;
-              order.o_order_lines.push({
-                ol_number,
-                ol_i_id,
-                ol_amount,
-                ol_supply_w_id,
-                ol_quantity,
-                ol_dist_info,
-                ol_i_name,
-              });
-            }
-          }
-          let convertedLine = JSON.stringify(order);
-          if (!isFirstElement) {
-            convertedLine = ",\n" + convertedLine;
-          } else {
-            isFirstElement = false;
-          }
-          outputStream.write(convertedLine);
-        }
-        orderRl.resume();
-      } catch (err) {
-        console(err);
-        process.exit(1);
+    const processOrderLine = line => {
+      if (!currentOrder || currentOrderlineToRead <= 0) {
+        return;
       }
+      const order = currentOrder;
+      const orderline = orderlineModelConvert(line);
+      if (orderline) {
+        const { ol_delivery_d, ol_w_id, ol_d_id, ol_o_id, ...rest } = orderline;
+        if (
+          ol_w_id != order.o_w_id ||
+          ol_d_id != order.o_d_id ||
+          ol_o_id != order.o_id
+        ) {
+          throw new Error(
+            "Order and order-lines are not matching",
+            ol_w_id,
+            ol_d_id,
+            ol_o_id,
+            order.o_w_id,
+            order.o_d_id,
+            order.o_id,
+          );
+        }
+        // Assign delivery_d into order and remove from all orderlines
+        order.o_delivery_d = ol_delivery_d;
+        order.o_order_lines.push({ ...rest });
+      }
+      currentOrderlineToRead -= 1;
+      if (currentOrderlineToRead > 0) {
+        orderlineRl.resume();
+      } else {
+        finishConvertCurrentOrder();
+      }
+    };
+
+    const processOrder = line => {
+      currentOrder = orderModelConvert(line);
+      if (currentOrder) {
+        currentOrder.o_order_lines = [];
+        currentOrderlineToRead = currentOrder.o_ol_cnt;
+        if ((currentOrderlineToRead = 0)) {
+          finishConvertCurrentOrder();
+        }
+      }
+    };
+
+    orderlineRl.on("line", line => {
+      orderlineRl.pause();
+      processOrderLine(line);
     });
+
+    orderRl.on("line", line => {
+      orderRl.pause();
+      processOrder(line);
+    });
+
     orderRl.on("close", () => {
       orderlineRl.close();
       outputStream.write("\n]");
