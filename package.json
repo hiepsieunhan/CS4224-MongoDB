@@ -4,6 +4,7 @@
   "description": "Mongo DB assignment for CS4224 - NUS",
   "main": "index.js",
   "dependencies": {
+    "line-by-line": "^0.1.5",
     "mongoose": "^4.13.0"
   },
   "devDependencies": {

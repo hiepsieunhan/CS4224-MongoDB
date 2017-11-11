@@ -1,8 +1,6 @@
-import fs, { write } from "fs";
+import fs from "fs";
 import readline from "readline";
-import { toASCII } from "punycode";
-import { resolve } from "path";
-import { print } from "util";
+import LineByLineReader from "line-by-line";
 
 const { DATA_DIR } = process.env;
 
@@ -333,19 +331,10 @@ async function convertOrders() {
     outputStream.write("[\n");
     let isFirstElement = true;
 
-    const orderlineStream = fs.createReadStream(
-      `${DATA_DIR}/tmp-order-line.csv`,
-    );
-    const orderStream = fs.createReadStream(`${DATA_DIR}/tmp-order.csv`);
-
-    const orderlineRl = readline.createInterface({
-      input: orderlineStream,
-    });
+    const orderlineRl = new LineByLineReader(`${DATA_DIR}/tmp-order-line.csv`);
     orderlineRl.pause();
 
-    const orderRl = readline.createInterface({
-      input: orderStream,
-    });
+    const orderRl = new LineByLineReader(`${DATA_DIR}/tmp-order.csv`);
 
     let currentOrder = null;
     let currentOrderlineToRead = 0;
