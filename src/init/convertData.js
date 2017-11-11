@@ -2,6 +2,7 @@ import fs, { write } from "fs";
 import readline from "readline";
 import { toASCII } from "punycode";
 import { resolve } from "path";
+import { print } from "util";
 
 const { DATA_DIR } = process.env;
 
@@ -217,6 +218,26 @@ async function writeToJSONFile(data, filename) {
   });
 }
 
+const orderlineModelConvert = row => {
+  const values = row.split(",");
+  if (values.length != 11) {
+    return null;
+  }
+  return {
+    ol_w_id: parseInt(values[0]) || 0,
+    ol_d_id: parseInt(values[1]) || 0,
+    ol_o_id: parseInt(values[2]) || 0,
+    ol_number: parseInt(values[3]) || 0,
+    ol_i_id: parseInt(values[4]) || 0,
+    ol_delivery_d: values[5],
+    ol_amount: parseFloat(values[6]) || 0,
+    ol_supply_w_id: parseInt(values[7]) || 0,
+    ol_quantity: parseFloat(values[8]) || 0,
+    ol_dist_info: values[9],
+    ol_i_name: values[10],
+  };
+};
+
 const orderModelConvert = row => {
   const values = row.split(",");
   if (values.length != 8) {
@@ -307,7 +328,92 @@ async function convertDistricts() {
 
 // Note: This method is very complicated because we need to read 2 large file parallel...
 async function convertOrders() {
-  // const orderlineStream = fs.createReadStream(`${DATA_DIR}/tmp-order-line.csv`);
+  return new Promise((resolve, reject) => {
+    const outputStream = fs.createWriteStream(`${DATA_DIR}/order.json`);
+    outputStream.write("[\n");
+    let isFirstElement = true;
+
+    const orderlineStream = fs.createReadStream(
+      `${DATA_DIR}/tmp-order-line.csv`,
+    );
+    const orderStream = fs.createReadStream(`${DATA_DIR}/tmp-order.csv`);
+
+    const orderlineRl = readline.createInterface({
+      input: orderlineStream,
+    });
+    orderlineRl.pause();
+
+    const orderRl = readline.createInterface({
+      input: orderStream,
+    });
+
+    const getNextOrderlineLine = async () => {
+      return new Promise((resolve, reject) => {
+        orderlineRl.resume();
+        orderlineRl.on("line", line => {
+          orderlineRl.pause();
+          resolve(line);
+        });
+      });
+    };
+
+    orderRl.on("line", async line => {
+      try {
+        orderRl.pause();
+        const order = orderModelConvert();
+        if (order) {
+          order.o_order_lines = [];
+          for (let i = 0; i < order.o_ol_cnt; i++) {
+            const nextOrderlineLine = await getNextOrderlineLine();
+            const orderline = orderlineModelConvert(nextOrderlineLine);
+            if (orderline) {
+              const {
+                ol_number,
+                ol_i_id,
+                ol_amount,
+                ol_supply_w_id,
+                ol_quantity,
+                ol_dist_info,
+                ol_i_name,
+                ol_delivery_d,
+              } = orderline;
+              // Assign delivery_d into order and remove from all orderlines
+              order.o_delivery_d = ol_delivery_d;
+              order.o_order_lines.push({
+                ol_number,
+                ol_i_id,
+                ol_amount,
+                ol_supply_w_id,
+                ol_quantity,
+                ol_dist_info,
+                ol_i_name,
+              });
+            }
+          }
+          let convertedLine = JSON.stringify(order);
+          if (!isFirstElement) {
+            convertedLine = ",\n" + convertedLine;
+          } else {
+            isFirstElement = false;
+          }
+          outputStream.write(convertedLine);
+        }
+        orderRl.resume();
+      } catch (err) {
+        console(err);
+        process.exit(1);
+      }
+    });
+    orderRl.on("close", () => {
+      orderlineRl.close();
+      outputStream.write("\n]");
+      outputStream.end();
+      console.log(
+        "Finish convert tmp-order.csv to order.json by embeding ordr-lines",
+      );
+      resolve();
+    });
+  });
 }
 
 convertWarehouses();
