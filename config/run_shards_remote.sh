@@ -4,11 +4,10 @@ do
   for i in 0 1 2
   do
     echo "Run shard $node with node $i"
-    ssh xcnd$node "/temp/mongodb/bin/mongod --config ~/CS4224-MongoDB/config/shards/xcnd$node/node$i.config --fork --logpath /temp/mongodb_log/repl$node.log"
+    ssh xcnd$node "/temp/mongodb/bin/mongod --config ~/CS4224-MongoDB/config/shards/xcnd$node/node$i.config --fork --logpath /temp/mongodb_log/repl$i.log"
   done
 done
 
 wait
 
 echo "Done."
-
