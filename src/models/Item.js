@@ -12,7 +12,7 @@ const itemSchema = new Schema(
     i_im_id: Number,
     i_data: String,
   },
-  { collection: "item" },
+  { collection: "item", shardKey: { i_id: 1 } },
 );
 
 const Item = mongoose.model("Item", itemSchema);

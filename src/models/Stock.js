@@ -23,7 +23,7 @@ const stockSchema = new Schema(
     s_i_name: String,
     s_i_price: Number,
   },
-  { collection: "stock" },
+  { collection: "stock", shardKey: { s_w_id: 1, s_i_id: 1 } },
 );
 
 stockSchema.index({ s_w_id: 1, s_i_id: 1 }, { unique: true });

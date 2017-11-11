@@ -26,7 +26,7 @@ const customerSchema = new Schema(
     c_delivery_cnt: Number,
     c_data: String,
   },
-  { collection: "customer" },
+  { collection: "customer", shardKey: { c_w_id: 1, c_d_id: 1 } },
 );
 
 // unique index

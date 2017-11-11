@@ -25,7 +25,7 @@ const orderSchema = new Schema(
       },
     ],
   },
-  { collection: "order" },
+  { collection: "order", shardKey: { o_w_id: 1, o_d_id: 1 } },
 );
 
 // unique index
