@@ -8,7 +8,7 @@ PORT=30020
 echo "----------Drop and create wholesaler DB----------"
 mongo wholesaler --host $HOST --port $PORT --eval "db.dropDatabase()"
 echo "use wholesaler" | mongo --host $HOST --port $PORT
-echo "sh.enableSharding(wholesaler)" mongo --host $HOST --port $PORT
+echo "sh.enableSharding('wholesaler')" mongo --host $HOST --port $PORT
 
 echo "----------Import model----------"
 HOST=$HOST PORT=$PORT DB=wholesaler npm run import-models
