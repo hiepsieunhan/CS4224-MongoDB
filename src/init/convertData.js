@@ -408,6 +408,8 @@ async function convertOrders() {
         currentOrderlineToRead = currentOrder.o_ol_cnt;
         if ((currentOrderlineToRead = 0)) {
           finishConvertCurrentOrder();
+        } else {
+          orderlineRl.resume();
         }
       }
     };
