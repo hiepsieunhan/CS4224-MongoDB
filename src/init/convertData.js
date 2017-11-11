@@ -175,7 +175,7 @@ async function convertStocks() {
   };
   await convertCSVtoJSON(
     `${DATA_DIR}/tmp-stock.csv`,
-    `${DATA_DIR}/stocks.json`,
+    `${DATA_DIR}/stock.json`,
     convertModel,
   );
 }
