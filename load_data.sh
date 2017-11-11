@@ -2,10 +2,21 @@
 
 # Import all json file into db, require json file path as first argument
 
+HOST=192.168.51.13
+PORT=30020
+
+echo "----------Drop and create wholesaler DB----------"
+echo "use wholesaler" | mongo --host $HOST --port $PORT
+echo "db.dropDatabase()" | mongo --host $HOST --port $PORT
+echo "use wholesaler" | mongo --host $HOST --port $PORT
+
+echo "----------Import model----------"
+HOST=$HOST PORT=$PORT DB=wholesaler npm run import-models
+
 echo "----------Import json file into MongoDB----------"
 for model in "warehouse" "district" "customer" "order" "item" "stock"
 do
-  mongoimport --host 192.168.51.13 --port 30020 --jsonArray --type json --file $1/$model.json --collection $model
+  mongoimport --host $HOST --port $PORT --jsonArray --type json --db wholesaler --file $1/$model.json --collection $model
 done
 
 

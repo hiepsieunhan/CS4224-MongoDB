@@ -14,7 +14,8 @@
   },
   "scripts": {
     "start": "babel-node src/index.js",
-    "convert-data": "babel-node src/init/convertData.js"
+    "convert-data": "babel-node src/init/convertData.js",
+    "import-models": "babel-node src/init/importModels.js"
   },
   "repository": {
     "type": "git",
