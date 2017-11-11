@@ -3,7 +3,7 @@ import District from "../models/District";
 import Item from "../models/Item";
 import Order from "../models/Order";
 import Stock from "../models/Stock";
-import Warehouse from "../models/Warehouse";
+import Customer from "../models/Customer";
 
 import mongoose from "mongoose";
 
