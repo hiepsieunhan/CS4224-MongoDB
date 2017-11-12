@@ -7,16 +7,17 @@ PORT=30020
 
 echo "----------Drop and create wholesaler DB----------"
 mongo wholesaler --host $HOST --port $PORT --eval "db.dropDatabase()"
-echo "use wholesaler" | mongo --host $HOST --port $PORT
-echo "sh.enableSharding('wholesaler')" | mongo --host $HOST --port $PORT
+echo "use wholesaler" | $MONGO_DIR/mongo --host $HOST --port $PORT
+echo "sh.enableSharding('wholesaler')" | $MONGO_DIR/mongo --host $HOST --port $PORT
 
 echo "----------Import model----------"
 HOST=$HOST PORT=$PORT DB=wholesaler npm run import-models
 
 echo "----------Import json file into MongoDB----------"
-for model in "warehouse" "district" "customer" "order" "item" "stock"
+for model in "warehouse" "district" "customer" "item" "stock" "order"
 do
-  mongoimport --host $HOST --port $PORT --jsonArray --type json --db wholesaler --file $1/$model.json --collection $model
+  $MONGO_DIR/mongoimport --host $HOST --port $PORT --numInsertionWorkers 16 --jsonArray --type json --db wholesaler --file $1/$model.
+json --collection $model
 done
 
 

@@ -20,5 +20,5 @@ db.once("open", function() {
   // Hacky part, wait for 20 seconds to make sure models are imported
   setTimeout(() => {
     mongoose.connection.close();
-  }, 20000);
+  }, 4000);
 });
