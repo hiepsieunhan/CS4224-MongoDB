@@ -22,8 +22,7 @@ HOST=$HOST PORT=$PORT DB=wholesaler npm run import-models
 echo "----------Import json file into MongoDB----------"
 for model in "warehouse" "district" "customer" "item" "stock" "order"
 do
-  $MONGO_DIR/mongoimport --host $HOST --port $PORT --numInsertionWorkers 16 --jsonArray --type json --db wholesaler --file $1/$model.
-json --collection $model
+  $MONGO_DIR/mongoimport --host $HOST --port $PORT --numInsertionWorkers 16 --jsonArray --type json --db wholesaler --file $1/$model.json --collection $model
 done
 
 
