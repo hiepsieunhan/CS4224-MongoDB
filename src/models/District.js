@@ -16,7 +16,7 @@ const districtSchema = new Schema(
     d_next_o_id: Number,
     d_next_deliver_o_id: Number,
   },
-  { collection: "district" },
+  { collection: "district", shardKey: { d_w_id: 1, d_id: 1 } },
 );
 
 districtSchema.index({ d_w_id: 1, d_id: 1 }, { unique: true });

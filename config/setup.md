@@ -80,3 +80,6 @@ rs.initiate(
     ]
   }
 )
+
+
+// connect to mongos and run add shard

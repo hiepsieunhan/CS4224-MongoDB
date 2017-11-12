@@ -16,7 +16,7 @@ const warehouseSchema = new Schema(
     w_tax: Number,
     w_ytd: Number,
   },
-  { collection: "warehouse" },
+  { collection: "warehouse", shardKey: { w_id: 1 } },
 );
 
 const Warehouse = mongoose.model("Warehouse", warehouseSchema);
