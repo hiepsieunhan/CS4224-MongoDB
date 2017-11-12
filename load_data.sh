@@ -6,7 +6,7 @@ HOST=192.168.51.13
 PORT=30020
 
 echo "----------Drop and create wholesaler DB----------"
-mongo wholesaler --host $HOST --port $PORT --eval "db.dropDatabase()"
+$MONGO_DIR/mongo wholesaler --host $HOST --port $PORT --eval "db.dropDatabase()"
 echo "use wholesaler" | $MONGO_DIR/mongo --host $HOST --port $PORT
 echo "sh.enableSharding('wholesaler')" | $MONGO_DIR/mongo --host $HOST --port $PORT
 echo "sh.shardCollection('wholesaler.customer', { c_w_id: 1, c_d_id: 1 } )" | $MONGO_DIR/mongo --host $HOST --port $PORT
