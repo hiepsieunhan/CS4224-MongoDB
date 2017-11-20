@@ -15,10 +15,20 @@ import Item from "./models/Item";
 
 import mongoose from "mongoose";
 
-const { PORT = 27017, HOST = "localhost", DB = "supplier" } = process.env;
+const {
+  PORT = 27017,
+  HOST = "localhost",
+  DB = "supplier",
+  READ_CONCERN = "local",
+  WRITE_CONCERN = 1,
+  W_TIMEOUT = 5000,
+} = process.env;
 
 mongoose.connect(`mongodb://${HOST}:${PORT}/${DB}`, {
   useMongoClient: true,
+  readConcern: READ_CONCERN,
+  w: WRITE_CONCERN,
+  wtimeout: W_TIMEOUT,
 });
 mongoose.Promise = global.Promise;
 
