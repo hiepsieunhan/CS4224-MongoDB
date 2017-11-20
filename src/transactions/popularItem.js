@@ -34,7 +34,7 @@ function getDistinctPopularItemsData(orders) {
   });
 }
 
-async function stockLevel(w_id, d_id, lastOrderCnt) {
+async function popularItem(w_id, d_id, lastOrderCnt) {
   const orders = await Order.find({ o_w_id: w_id, o_d_id: d_id })
     .sort({
       o_id: -1,
