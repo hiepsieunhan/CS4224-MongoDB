@@ -12,7 +12,8 @@ echo "Download Mongo"
 curl -O https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.4.7.tgz
 tar -zxvf mongodb-linux-x86_64-3.4.7.tgz
 rm mongodb-linux-x86_64-3.4.7.tgz
-cp -R -n mongodb-linux-x86_64-3.4.7/ /temp/mongodb
+mv mongodb-linux-x86_64-3.4.7 mongodb
+cp mongodb /temp
 
 echo "Create db path"
 mkdir -p /temp/mongodb/log
