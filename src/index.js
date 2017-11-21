@@ -64,9 +64,9 @@ async function main() {
             }
             // Note: This is due to the inconsistent format of input - c_id, w_id, d_id
             result = await newOrder(
+              parseInt(values[2]),
               parseInt(values[3]),
               parseInt(values[1]),
-              parseInt(values[2]),
               itemsData,
             );
             break;
