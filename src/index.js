@@ -116,7 +116,7 @@ async function main() {
           default:
             break;
         }
-        console.log(`Transaction: ${values[0]}:`);
+        console.log(`Transaction ${xactCount}: ${values[0]}:`);
         console.log(result);
       }
     }
