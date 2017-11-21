@@ -42,7 +42,7 @@ wait
 
 echo "Running summary"
 
-ssh ${acc_arr[0]} "source .bash_profile;  cd; dir=\$(pwd); cd CS4224-MongoDB; STATS_FILE=~/log/${run_id}-stats.txt npm run summarize" > summary-${run_id}.txt
+ssh ${acc_arr[0]} "source .bash_profile;  cd; dir=\$(pwd); cd CS4224-MongoDB; STATS_FILE=\$dir/log/${run_id}-stats.txt npm run summarize > \$dir/log/summary-${run_id}.txt"
 
 echo "Done with NC=${NC} CONCERN=${CONCERN}"
 
