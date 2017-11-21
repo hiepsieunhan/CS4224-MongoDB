@@ -8,7 +8,7 @@ if (!STATS_FILE) {
 const contents = fs.readFileSync(STATS_FILE, "utf8");
 const values = contents
   .split("\n")
-  .map(value => value)
+  .filter(value => value)
   .map(value => parseFloat(value));
 
 const max = values.length
