@@ -33,6 +33,7 @@ mongoose.connect(`mongodb://${HOST}:${PORT}/${DB}`, {
   wtimeout: W_TIMEOUT,
 });
 mongoose.Promise = global.Promise;
+const db = mongoose.connection;
 
 async function main() {
   try {
@@ -127,8 +128,8 @@ async function main() {
     console.log(err);
     process.exit(1);
   }
+  db.close();
 }
 
-const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", main);
