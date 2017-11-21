@@ -40,7 +40,8 @@ async function main() {
     const reader = new LineByLine(XACT_FILE);
     const startTime = Date.now() / 1000;
     let xactCount = 0;
-    while (xactCount < MAX_TRANSACTION) {
+    const maxXact = parseInt(MAX_TRANSACTION) || 0;
+    while (xactCount < maxXact) {
       xactCount++;
       let line = reader.next();
       if (line === false) {

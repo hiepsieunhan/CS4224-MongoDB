@@ -17,7 +17,7 @@ acc_arr=($(tail -1 nodes.txt))
 if [ -z "$MAX_XACT" ]; then
     nflag=""
 else
-    nflag=" $MAX_XACT"
+    nflag=" MAX_TRANSACTION=$MAX_XACT"
 fi
 
 # Go to home dir
