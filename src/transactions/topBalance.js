@@ -11,7 +11,7 @@ async function getTopBalanceCustomer() {
 }
 
 async function topBalance() {
-  const customer = await getTopBalanceCustomer(options);
+  const customer = await getTopBalanceCustomer();
   if (!customer) {
     return null;
   }

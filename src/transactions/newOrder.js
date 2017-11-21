@@ -53,7 +53,7 @@ async function prepareOrderlines(w_id, d_id, itemsData) {
 async function newOrder(w_id, d_id, c_id, itemsData) {
   const o_id = await getOrderIdAndUpdateDistrict(w_id, d_id);
   if (isNaN(o_id)) {
-    return null;
+    return `${o_id} is not a number`;
   }
   const [warehouse, district, customer] = await Promise.all([
     Warehouse.findOne({ w_id }),
@@ -61,7 +61,7 @@ async function newOrder(w_id, d_id, c_id, itemsData) {
     Customer.findOne({ c_w_id: w_id, c_d_id: d_id, c_id }),
   ]);
   if (!warehouse || !district || !customer) {
-    return null;
+    return `warhouse or district or customer not exist!!!`;
   }
   const {
     totalAmount: originTotalAmount,
