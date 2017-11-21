@@ -13,7 +13,7 @@ curl -O https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.4.7.tgz
 tar -zxvf mongodb-linux-x86_64-3.4.7.tgz
 rm mongodb-linux-x86_64-3.4.7.tgz
 mv mongodb-linux-x86_64-3.4.7 mongodb
-cp mongodb /temp
+mv mongodb /temp
 
 echo "Create db path"
 mkdir -p /temp/mongodb/log

@@ -32,7 +32,7 @@ for shardId in `seq 0 4`; do
   for repId in `seq 0 2`; do
     port=$((30000 + $repId))
     echo "Running source .bash_profile; \$MONGO_DIR/mongod --storageEngine wiredTiger --enableMajorityReadConcern --fork --shardsvr --directoryperdb --pidfilepath /temp/mongodb/pidshard${shardId} --dbpath /temp/mongodb/data/repl${repId} --logpath /temp/mongodb/log/repl${repId}.log --replSet shard${shardId} --port ${port}"
-    ssh ${acc_arr[accId]} "source .bash_profile; \$MONGO_DIR/mongod --storageEngine wiredTiger --enableMajorityReadConcern --fork --shardsvr --directoryperdb --pidfilepath /temp/mongodb/pidshard${shardId} --dbpath /temp/mongodb/data/repl${repId} --logpath /temp/mongodb/log/repl${repId}.log --replSet shard${shardId} --port ${port}"
+    ssh ${acc_arr[shardId]} "source .bash_profile; \$MONGO_DIR/mongod --storageEngine wiredTiger --enableMajorityReadConcern --fork --shardsvr --directoryperdb --pidfilepath /temp/mongodb/pidshard${shardId} --dbpath /temp/mongodb/data/repl${repId} --logpath /temp/mongodb/log/repl${repId}.log --replSet shard${shardId} --port ${port}"
   done
 
   # Create rs
