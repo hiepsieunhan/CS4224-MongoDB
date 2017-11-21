@@ -5,7 +5,7 @@ import pick from "lodash.pick";
 
 async function getTopBalanceCustomer() {
   const customers = await Customer.find()
-    .sort({ c_balance })
+    .sort({ c_balance: -1 })
     .limit(1);
   return customers && customers.length > 0 ? customers[0] : null;
 }
