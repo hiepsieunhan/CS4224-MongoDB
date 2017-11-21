@@ -46,6 +46,8 @@ done
 
 echo "Convert csv file into json file"
 
+cd CS4224-MongoDB
+
 DATA_DIR=$csv_dir npm run convert-data 
 
 echo "Done"
