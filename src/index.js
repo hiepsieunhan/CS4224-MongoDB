@@ -14,13 +14,15 @@ const {
   PORT = 27017,
   HOST = "localhost",
   DB = "wholesaler",
-  READ_CONCERN = "local",
-  WRITE_CONCERN = 1,
+  CONCERN = "local",
   W_TIMEOUT = 5000,
-  MAX_TRANSACTION = 100000000,
   XACT_FILE,
   SUMMARY_FILE,
+  MAX_TRANSACTION = 1000000000,
 } = process.env;
+
+const READ_CONCERN = CONCERN === "local" ? "local" : "majority";
+const WRITE_CONCERN = CONCERN === "local" ? 1 : "majority";
 
 mongoose.connect(`mongodb://${HOST}:${PORT}/${DB}`, {
   useMongoClient: true,
