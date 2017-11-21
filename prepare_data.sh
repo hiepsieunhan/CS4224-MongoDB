@@ -10,6 +10,7 @@ if [ ! -d "data" ]; then
     wget http://www.comp.nus.edu.sg/~cs4224/4224-project-files.zip -O data.zip
     unzip data.zip
     rm data.zip
+    mv 4224-project-files data
     echo "Data downloaded successfully!"
 else
     echo "Data folder already exists"
