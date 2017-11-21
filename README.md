@@ -10,7 +10,7 @@
 
 1. Make sure that you setup all 5 nodes such that they have passwordless ssh access to each other. It is required that you have `node 8` and `npm` installed. ssh into one server and do following steps
 2. Clone this repo into the home dir of the node. Make sure that the folder is named `CS4224-MongoDB`. Go inside `CS4224-MongoDB` folder.
-3. Update the `nodes.txt` 
+3. Update the `nodes.txt` with your nodes ip and hostnames.
 4. Go inside `CS4224-MongoDB` folder and run 
 ```sh
 $ npm install
