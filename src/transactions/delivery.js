@@ -19,7 +19,7 @@ async function getOrderToDeliverAndupdateDistrict(w_id, d_id) {
 
 async function deliveryDistrict(w_id, d_id, carrier_id) {
   const orderIdToDeliver = await getOrderToDeliverAndupdateDistrict(w_id, d_id);
-  if (!nextDeliverOrderId) {
+  if (!orderIdToDeliver) {
     return;
   }
 
