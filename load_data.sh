@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Import all json file into db, require json file path as first argument
+# Import all json file into db
 
 HOST=localhost
 PORT=30020
@@ -26,10 +26,12 @@ sh.shardCollection('wholesaler.stock', { s_w_id: 1, s_i_id: 1 } )
 sh.shardCollection('wholesaler.warehouse', { w_id: 1 } )
 EOF
 
+cd
+
 echo "Import json file into MongoDB"
 for model in "warehouse" "district" "customer" "item" "stock" "order"
 do
-  $MONGO_DIR/mongoimport --host $HOST --port $PORT --numInsertionWorkers 16 --jsonArray --type json --db wholesaler --file $1/$model.json --collection $model
+  $MONGO_DIR/mongoimport --host $HOST --port $PORT --numInsertionWorkers 16 --jsonArray --type json --db wholesaler --file $(pwd)/data/data-files/$model.json --collection $model
 done
 
 # sleep before data is balance
