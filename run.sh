@@ -30,11 +30,12 @@ for serverId  $(seq 0 4); do
     ssh $acc "cd; mkdir -p log/${run_id}"
 done
  
+ssh ${acc_arr[0]} "source .bash_profile; cd; ~/CS4224-MongoDB/load_data.sh"
+
 for i in $(seq 1 $NC)
 do
     serverId=$(( $i % 5 ))
-    ssh ${acc_arr[serverId]} "source .bash_profile; ~/CS4224-MongoDB/load_data.sh ~/data/data-files"
-    ssh ${acc_arr[serverId]} "source .bash_profile; cd; PORT=30020 CONCERN=${CONCERN} XACT_FILE=\$(pwd)/data/xact-files/${i}.txt SUMMARY_FILE=\$(pwd)/log/${run_id}-stats.txt npm start > \$(pwd)/log/${run_id}/${i}.log" &
+    ssh ${acc_arr[serverId]} "source .bash_profile; cd; dir=\$(pwd); cd CS4224-MongoDB; PORT=30020 CONCERN=${CONCERN} XACT_FILE=\$dir/data/xact-files/${i}.txt SUMMARY_FILE=\$dir/log/${run_id}-stats.txt npm start > \$dir/log/${run_id}/${i}.log" &
 done
 
 wait

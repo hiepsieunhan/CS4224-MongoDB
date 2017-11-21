@@ -13,6 +13,8 @@ use wholesaler;
 sh.enableSharding('wholesaler');
 EOF
 
+cd ~/CS4224-MongoDB
+
 echo "Import model"
 HOST=$HOST PORT=$PORT DB=wholesaler npm run import-models
 
