@@ -16,7 +16,7 @@ else
     echo "Data folder already exists"
 fi
 
-csv_dir=$(pwd)/data/xact-files
+csv_dir=$(pwd)/data/data-files
 
 echo "Remove json and tmp csv files"
 find $csv_dir -type f -name '*.json' -delete
