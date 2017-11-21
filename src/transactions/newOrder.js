@@ -46,7 +46,7 @@ async function prepareOrderlines(w_id, d_id, itemsData) {
   );
   return {
     totalAmount,
-    orderLines,
+    orderLines: orderLines.filter(x => x),
   };
 }
 
