@@ -1,41 +1,47 @@
 #!/usr/bin/env bash
+# Run an experiment, run on one of 5 nodes
 
 # required variables:
-# -   node_id: id of this server, from 1-5
-# -   host: ip of the server where the mongos we want to connect running
-# -   num_clients: number of clients to run
-# -   concern: read and write concerns, either "local" or "majority"
+# -   NC: number of clients to run
+# -   CONCERN: read and write concerns, either "local" or "majority"
+# -   MAX_XACT: maximum number of transaction to run, this is optional
 
-node_id=$1
-host=$2
-num_clients=$3
-read_concern=$4
-write_concern=$5
+NC=$1
+CONCERN=$2
+MAX_XACT=$3
 
-port=30020
+accs=`tail -1 nodes.txt`
+acc_arr=($(tail -1 nodes.txt))
 
-xact_dir=$(pwd)/data/xact-files
-log_dir=$(pwd)/log
-run_id=$num_clients-$read_concern-$write_concern
+# Set n flag
+if [ -z "$MAX_XACT" ]; then
+    nflag=""
+else
+    nflag=" $MAX_XACT"
+fi
 
-mkdir -p $log_dir/$run_id
+# Go to home dir
 
-echo "Spawn NC / 5 process ..."
- 
-for i in $(seq 1 $num_clients)
-do
-    if [ $((i%5 + 1)) == $node_id ]
-    then
-        stats_file=$log_dir/$run_id-stats.txt
-        log_file=$log_dir/$run_id/xact-$i.log
-        touch $stats_file
-        PORT=$port HOST=$host READ_CONCERN=$read_concern WRITE_CONCERN=$write_concern XACT_FILE=$xact_dir/$i.txt SUMMARY_FILE=$stats_file npm start > $log_file &
-    fi
+run_id=$NC-$CONCERN
+
+# create log folder
+for serverId  $(seq 0 4); do
+    acc=${acc_arr[serverId]}
+    ssh $acc "cd; mkdir -p log/${run_id}"
 done
-
-echo "Join NC / 5 process"
+ 
+for i in $(seq 1 $NC)
+do
+    serverId=$(( $i % 5 ))
+    ssh ${acc_arr[serverId]} "source .bash_profile; ~/CS4224-MongoDB/load_data.sh ~/data/data-files"
+    ssh ${acc_arr[serverId]} "source .bash_profile; cd; PORT=30020 CONCERN=${CONCERN} XACT_FILE=\$(pwd)/data/xact-files/${i}.txt SUMMARY_FILE=\$(pwd)/log/${run_id}-stats.txt npm start > \$(pwd)/log/${run_id}/${i}.log" &
+done
 
 wait
 
-echo "done xacts on node $node_id with num_clients $num_clients, read concern $read_concern and  write concern $write_concern"
+echo "Running summary"
+
+ssh ${acc_arr[0]} "source .bash_profile; STATS_FILE=~/log/${run_id}-stats.txt" > summary-${run_id}.txt
+
+echo "Done with NC=${NC} CONCERN=${CONCERN}"
 

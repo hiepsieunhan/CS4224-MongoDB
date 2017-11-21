@@ -2,6 +2,8 @@
 
 echo "Start"
 
+cd
+
 # Check for data folder
 if [ ! -d "data" ]; then
     echo "Data folder does not exist. Downloading it from remote."
