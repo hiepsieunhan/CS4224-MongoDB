@@ -32,5 +32,7 @@ do
   $MONGO_DIR/mongoimport --host $HOST --port $PORT --numInsertionWorkers 16 --jsonArray --type json --db wholesaler --file $1/$model.json --collection $model
 done
 
+# sleep before data is balance
+sleep 300
 
 echo "Done"
