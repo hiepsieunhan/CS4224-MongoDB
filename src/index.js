@@ -127,7 +127,8 @@ async function main() {
     fs.appendFileSync(SUMMARY_FILE, `${throughput}\n`);
   } catch (err) {
     console.log(err);
-    process.exit(1);
+    db.close();
+    process.exit();
   }
   db.close();
 }

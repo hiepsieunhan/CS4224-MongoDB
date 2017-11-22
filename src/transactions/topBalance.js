@@ -11,21 +11,25 @@ async function getTopBalanceCustomer() {
 }
 
 async function topBalance() {
-  const customer = await getTopBalanceCustomer();
-  if (!customer) {
-    return null;
+  try {
+    const customer = await getTopBalanceCustomer();
+    if (!customer) {
+      return null;
+    }
+    const { c_w_id, c_d_id } = customer;
+    const warehouse = await Warehouse.findOne({ w_id: c_w_id });
+    const district = await District.findOne({ d_w_id: c_w_id, d_id: c_d_id });
+    if (!warehouse || !district) {
+      return null;
+    }
+    return {
+      ...pick(customer, ["c_first", "c_middle", "c_last", "c_balance"]),
+      w_name: warehouse.w_name,
+      d_name: district.d_name,
+    };
+  } catch (err) {
+    return err;
   }
-  const { c_w_id, c_d_id } = customer;
-  const warehouse = await Warehouse.findOne({ w_id: c_w_id });
-  const district = await District.findOne({ d_w_id: c_w_id, d_id: c_d_id });
-  if (!warehouse || !district) {
-    return null;
-  }
-  return {
-    ...pick(customer, ["c_first", "c_middle", "c_last", "c_balance"]),
-    w_name: warehouse.w_name,
-    d_name: district.d_name,
-  };
 }
 
 export default topBalance;

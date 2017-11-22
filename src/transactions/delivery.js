@@ -52,11 +52,15 @@ async function deliveryDistrict(w_id, d_id, carrier_id) {
 }
 
 async function delivery(w_id, carrier_id) {
-  const jobs = [];
-  for (let i = 1; i < 11; i++) {
-    jobs.push(deliveryDistrict(w_id, i, carrier_id));
+  try {
+    const jobs = [];
+    for (let i = 1; i < 11; i++) {
+      jobs.push(deliveryDistrict(w_id, i, carrier_id));
+    }
+    await Promise.all(jobs);
+  } catch (err) {
+    return err;
   }
-  await Promise.all(jobs);
 }
 
 export default delivery;

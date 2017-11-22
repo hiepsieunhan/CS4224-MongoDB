@@ -35,41 +35,45 @@ function getDistinctPopularItemsData(orders) {
 }
 
 async function popularItem(w_id, d_id, lastOrderCnt) {
-  const orders = await Order.find({ o_w_id: w_id, o_d_id: d_id })
-    .sort({
-      o_id: -1,
-    })
-    .limit(lastOrderCnt);
-  const customers = await Promise.all(
-    orders.map(async order => {
-      const customer = await Customer.findOne({
-        c_w_id: w_id,
-        c_d_id: d_id,
-        c_id: order.o_c_id,
-      });
-      return customer;
-    }),
-  );
-  const ordersPopularItems = orders.map((order, index) => {
-    const popularItems = getPopularOrderlines(order.o_order_lines);
-    return {
-      o_id: order.o_id,
-      o_entry_d: order.o_entry_d,
-      ...pick(customers[index], ["c_first", "c_middle", "c_last"]),
-      popularItems: popularItems.map(item =>
-        pick(item, ["ol_i_name", "ol_quantity"]),
-      ),
-    };
-  });
+  try {
+    const orders = await Order.find({ o_w_id: w_id, o_d_id: d_id })
+      .sort({
+        o_id: -1,
+      })
+      .limit(lastOrderCnt);
+    const customers = await Promise.all(
+      orders.map(async order => {
+        const customer = await Customer.findOne({
+          c_w_id: w_id,
+          c_d_id: d_id,
+          c_id: order.o_c_id,
+        });
+        return customer;
+      }),
+    );
+    const ordersPopularItems = orders.map((order, index) => {
+      const popularItems = getPopularOrderlines(order.o_order_lines);
+      return {
+        o_id: order.o_id,
+        o_entry_d: order.o_entry_d,
+        ...pick(customers[index], ["c_first", "c_middle", "c_last"]),
+        popularItems: popularItems.map(item =>
+          pick(item, ["ol_i_name", "ol_quantity"]),
+        ),
+      };
+    });
 
-  const distinctPopularItems = getDistinctPopularItemsData(orders);
-  return {
-    w_id,
-    d_id,
-    L: lastOrderCnt,
-    ordersPopularItems,
-    distinctPopularItems,
-  };
+    const distinctPopularItems = getDistinctPopularItemsData(orders);
+    return {
+      w_id,
+      d_id,
+      L: lastOrderCnt,
+      ordersPopularItems,
+      distinctPopularItems,
+    };
+  } catch (err) {
+    return err;
+  }
 }
 
 export default popularItem;

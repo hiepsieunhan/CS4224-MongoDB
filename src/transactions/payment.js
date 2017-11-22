@@ -33,29 +33,33 @@ async function updateCustomer(w_id, d_id, c_id, amount) {
 }
 
 async function payment(w_id, d_id, c_id, amount) {
-  const [warehouse, district, customer] = await Promise.all([
-    updateWarehouse(w_id, amount),
-    updateDistrict(w_id, d_id, amount),
-    updateCustomer(w_id, d_id, c_id, amount),
-  ]);
-  return {
-    warehouse: pick(warehouse, [
-      "w_street_1",
-      "w_street_2",
-      "w_city",
-      "w_state",
-      "w_zip",
-    ]),
-    district: pick(district, [
-      "d_street_1",
-      "d_street_2",
-      "d_city",
-      "d_state",
-      "d_zip",
-    ]),
-    customer: customer ? customer.toObject() : null,
-    payment: amount,
-  };
+  try {
+    const [warehouse, district, customer] = await Promise.all([
+      updateWarehouse(w_id, amount),
+      updateDistrict(w_id, d_id, amount),
+      updateCustomer(w_id, d_id, c_id, amount),
+    ]);
+    return {
+      warehouse: pick(warehouse, [
+        "w_street_1",
+        "w_street_2",
+        "w_city",
+        "w_state",
+        "w_zip",
+      ]),
+      district: pick(district, [
+        "d_street_1",
+        "d_street_2",
+        "d_city",
+        "d_state",
+        "d_zip",
+      ]),
+      customer: customer ? customer.toObject() : null,
+      payment: amount,
+    };
+  } catch (err) {
+    return err;
+  }
 }
 
 export default payment;

@@ -51,55 +51,59 @@ async function prepareOrderlines(w_id, d_id, itemsData) {
 }
 
 async function newOrder(w_id, d_id, c_id, itemsData) {
-  const o_id = await getOrderIdAndUpdateDistrict(w_id, d_id);
-  if (isNaN(o_id)) {
-    return `${o_id} is not a number`;
+  try {
+    const o_id = await getOrderIdAndUpdateDistrict(w_id, d_id);
+    if (isNaN(o_id)) {
+      return `${o_id} is not a number`;
+    }
+    const [warehouse, district, customer] = await Promise.all([
+      Warehouse.findOne({ w_id }),
+      District.findOne({ d_w_id: w_id, d_id }),
+      Customer.findOne({ c_w_id: w_id, c_d_id: d_id, c_id }),
+    ]);
+    if (!warehouse || !district || !customer) {
+      return `warhouse or district or customer not exist!!!`;
+    }
+    const {
+      totalAmount: originTotalAmount,
+      orderLines,
+    } = await prepareOrderlines(w_id, d_id, itemsData);
+    const isAllLocal = !itemsData.some(item => item.supply_w_id != w_id);
+    const order = new Order({
+      o_w_id: w_id,
+      o_d_id: d_id,
+      o_id,
+      o_c_id: c_id,
+      o_carrier_id: 0,
+      o_ol_cnt: itemsData.length,
+      o_all_local: isAllLocal,
+      o_entry_d: new Date().toString(),
+      o_delivery_d: "",
+      o_order_lines: orderLines,
+    });
+    await order.save();
+    const totalAmount =
+      originTotalAmount *
+      (1 + district.d_tax + warehouse.w_tax) *
+      (1 - customer.c_discount);
+    return {
+      customer: {
+        w_id,
+        d_id,
+        c_id,
+        ...pick(customer, ["c_last", "c_credit", "c_discount"]),
+      },
+      w_tax: warehouse.w_tax,
+      d_tax: district.d_tax,
+      o_id,
+      o_entry_d: order.o_entry_d,
+      num_items: itemsData.length,
+      total_amount: totalAmount,
+      items: orderLines,
+    };
+  } catch (err) {
+    return err;
   }
-  const [warehouse, district, customer] = await Promise.all([
-    Warehouse.findOne({ w_id }),
-    District.findOne({ d_w_id: w_id, d_id }),
-    Customer.findOne({ c_w_id: w_id, c_d_id: d_id, c_id }),
-  ]);
-  if (!warehouse || !district || !customer) {
-    return `warhouse or district or customer not exist!!!`;
-  }
-  const {
-    totalAmount: originTotalAmount,
-    orderLines,
-  } = await prepareOrderlines(w_id, d_id, itemsData);
-  const isAllLocal = !itemsData.some(item => item.supply_w_id != w_id);
-  const order = new Order({
-    o_w_id: w_id,
-    o_d_id: d_id,
-    o_id,
-    o_c_id: c_id,
-    o_carrier_id: 0,
-    o_ol_cnt: itemsData.length,
-    o_all_local: isAllLocal,
-    o_entry_d: new Date().toString(),
-    o_delivery_d: "",
-    o_order_lines: orderLines,
-  });
-  await order.save();
-  const totalAmount =
-    originTotalAmount *
-    (1 + district.d_tax + warehouse.w_tax) *
-    (1 - customer.c_discount);
-  return {
-    customer: {
-      w_id,
-      d_id,
-      c_id,
-      ...pick(customer, ["c_last", "c_credit", "c_discount"]),
-    },
-    w_tax: warehouse.w_tax,
-    d_tax: district.d_tax,
-    o_id,
-    o_entry_d: order.o_entry_d,
-    num_items: itemsData.length,
-    total_amount: totalAmount,
-    items: orderLines,
-  };
 }
 
 export default newOrder;
